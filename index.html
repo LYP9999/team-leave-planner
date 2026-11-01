@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Team Leave Plan: clickable layout</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#ffffff; --surface:#ffffff; --ink:#1b2a2f; --muted:#5b6b70; --line:#e6e9e8;
+  --brand:#1f5f5b; --brand-ink:#ffffff; --soft:#e3efec;
+  --warn:#b3261e; --warn-bg:#fbe9e7; --ok:#2e7d4f; --ok-bg:#e4f3ea; --wait:#8a5a00; --wait-bg:#fdf1d6;
+  --away:#dcefeb; --tint:#f5f7f6;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1719; --surface:#172225; --ink:#e6eeee; --muted:#9fb1b4; --line:#2a393c;
+    --brand:#5fb3ab; --brand-ink:#08201e; --soft:#1e3330;
+    --warn:#ff8a80; --warn-bg:#3a1a18; --ok:#7fd1a0; --ok-bg:#183326; --wait:#f0c36a; --wait-bg:#38290a;
+    --away:#24433f; --tint:#1e2c2f; color-scheme:dark;
+  }
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 48px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:16px}
+h1{font-size:1.6rem;margin:0;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:.9rem}
+nav{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:20px;overflow-x:auto}
+nav button{font:inherit;font-weight:600;background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);padding:10px 14px;cursor:pointer;white-space:nowrap}
+nav button[aria-selected="true"]{color:var(--brand);border-bottom-color:var(--brand)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.panel{display:none}.panel.on{display:block}
+h2{font-size:1.2rem;margin:0 0 4px}
+.lead{color:var(--muted);margin:0 0 18px;max-width:60ch}
+.grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px}
+label{display:block;font-weight:600;font-size:.9rem;margin:14px 0 4px}
+label:first-child{margin-top:0}
+input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 10px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{font:inherit;font-weight:600;border-radius:6px;padding:10px 16px;border:1px solid var(--brand);background:var(--brand);color:var(--brand-ink);cursor:pointer;margin-top:18px}
+.btn.alt{background:transparent;color:var(--brand);margin-top:0}
+.btn.bad{background:transparent;color:var(--warn);border-color:var(--warn);margin-top:0}
+.tag{display:inline-block;font-size:.8rem;font-weight:600;padding:2px 9px;border-radius:99px}
+.tag.pending{background:var(--wait-bg);color:var(--wait)}
+.tag.approved{background:var(--ok-bg);color:var(--ok)}
+.tag.rejected{background:var(--warn-bg);color:var(--warn)}
+ul.plain{list-style:none;margin:0;padding:0}
+ul.plain li{padding:12px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}
+ul.plain li:last-child{border-bottom:0}
+.small{font-size:.85rem;color:var(--muted)}
+.req{padding:14px 0;border-bottom:1px solid var(--line)}
+.req:last-child{border-bottom:0}
+.req .top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.req .acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.req input{margin-top:10px}
+input[readonly]{background:var(--tint);color:var(--muted);cursor:not-allowed;font-weight:600}
+.warnbar{background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-weight:600}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:560px;background:var(--surface);border:1px solid var(--line)}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:center;font-size:.9rem}
+th:first-child,td:first-child{text-align:left;font-weight:600;white-space:nowrap}
+td.away{background:var(--away);color:var(--brand);font-weight:600}
+td.pend{background:repeating-linear-gradient(45deg,var(--wait-bg),var(--wait-bg) 6px,transparent 6px,transparent 12px);color:var(--wait);font-weight:600}
+tr.sum td{font-weight:700;background:var(--tint)}
+td.gap{background:var(--warn-bg);color:var(--warn)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px}
+.legend span{display:flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border:1px solid var(--line);border-radius:3px;display:inline-block}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw}
+.toast.show{opacity:1}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+.note{margin-top:28px;font-size:.85rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Team Leave Plan</h1>
+    <span class="sub">Northwind Support (fictional data). Step 1: clickable layout.</span>
+  </header>
+
+  <nav role="tablist" aria-label="Screens">
+    <button role="tab" aria-selected="true" data-p="request">1. Request leave</button>
+    <button role="tab" aria-selected="false" data-p="approve">2. Approve requests</button>
+    <button role="tab" aria-selected="false" data-p="calendar">3. Team calendar</button>
+  </nav>
+
+  <!-- Screen 1 -->
+  <section class="panel on" id="request" role="tabpanel">
+    <h2>Request leave</h2>
+    <p class="lead">Fill in the form and your supervisor is notified in the app. No separate message needed.</p>
+    <div class="grid">
+      <div class="box">
+        <label for="who">Your name</label>
+        <select id="who"><option>Staff A</option><option>Staff B</option><option>Staff C</option><option>Staff D</option><option>Staff E</option><option>Staff F</option><option selected>Staff G</option><option>Staff H</option></select>
+        <label for="left">Eligible leave remaining until end of work year (31 Dec 2026)</label>
+        <input id="left" type="text" readonly aria-readonly="true" value="8 days">
+        <label for="type">Leave type</label>
+        <select id="type"><option>Annual leave</option><option>Sick leave</option><option>Other</option></select>
+        <div class="row">
+          <div><label for="from">Start date</label><input id="from" type="date" value="2026-11-05"></div>
+          <div><label for="to">End date</label><input id="to" type="date" value="2026-11-06"></div>
+        </div>
+        <label for="why">Reason (optional)</label>
+        <textarea id="why" rows="3" placeholder="For example: family event"></textarea>
+        <button class="btn" id="submit">Submit request</button>
+      </div>
+      <div class="box">
+        <h2>My requests</h2>
+        <ul class="plain" id="mine">
+          <li><div>Mon 26 Oct to Tue 27 Oct<br><span class="small">Annual leave</span></div><span class="tag approved">Approved</span></li>
+          <li><div>Fri 9 Oct<br><span class="small">Sick leave</span></div><span class="tag approved">Approved</span></li>
+          <li><div>Mon 14 Sep<br><span class="small">Other</span></div><span class="tag rejected">Rejected</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Screen 2 -->
+  <section class="panel" id="approve" role="tabpanel">
+    <h2>Requests waiting for you</h2>
+    <p class="lead">Each card shows how many people would be available on the days requested.</p>
+    <div class="box" id="queue">
+      <div class="req">
+        <div class="top"><strong>Staff H</strong><span class="tag pending">Pending</span></div>
+        <div>Other leave, Wed 4 Nov</div>
+        <div class="small">Team available that day if approved: 6 of 12 (below the minimum of 8)</div>
+        <input type="text" placeholder="Comment (optional)" aria-label="Comment for Staff H">
+        <div class="acts"><button class="btn alt" data-act="Approved">Approve</button><button class="btn bad" data-act="Rejected">Reject</button></div>
+      </div>
+      <div class="req">
+        <div class="top"><strong>Staff G</strong><span class="tag pending">Pending</span></div>
+        <div>Annual leave, Thu 5 Nov to Fri 6 Nov</div>
+        <div class="small">Team available if approved: 9 of 12 on Thu, 9 of 12 on Fri</div>
+        <input type="text" placeholder="Comment (optional)" aria-label="Comment for Staff G">
+        <div class="acts"><button class="btn alt" data-act="Approved">Approve</button><button class="btn bad" data-act="Rejected">Reject</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Screen 3 -->
+  <section class="panel" id="calendar" role="tabpanel">
+    <h2>Team calendar: 2 to 6 Nov 2026</h2>
+    <p class="lead">Approved leave appears here automatically. Days below the minimum of 8 people turn red.</p>
+    <div class="warnbar" role="alert">Manpower gap on Wed 4 Nov: only 7 of 12 available. Plan backup cover.</div>
+    <div class="scroll">
+      <table id="cal"></table>
+    </div>
+    <div class="legend small">
+      <span><i class="sw" style="background:var(--away)"></i>Approved leave</span>
+      <span><i class="sw" style="background:var(--wait-bg)"></i>Pending request</span>
+      <span><i class="sw" style="background:var(--warn-bg)"></i>Below minimum team size</span>
+    </div>
+  </section>
+
+  <p class="note">This is the layout step. Buttons respond, but the calendar does not yet recalculate. That comes in step 2.</p>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const days=["Mon 2","Tue 3","Wed 4","Thu 5","Fri 6"];
+const staff=["Staff A","Staff B","Staff C","Staff D","Staff E","Staff F","Staff G","Staff H","Staff I","Staff J","Staff K","Staff L"];
+const leave={ "Staff A":[2,3],"Staff B":[2],"Staff C":[2],"Staff D":[2,3,4],"Staff E":[2],"Staff F":[4] };
+const pend={ "Staff G":[3,4],"Staff H":[2] };
+const min=8;
+(function build(){
+  let h="<thead><tr><th>Person</th>"+days.map(d=>"<th>"+d+"</th>").join("")+"</tr></thead><tbody>";
+  staff.forEach(s=>{
+    h+="<tr><td>"+s+"</td>";
+    for(let i=0;i<5;i++){
+      if((leave[s]||[]).includes(i)) h+='<td class="away">Away</td>';
+      else if((pend[s]||[]).includes(i)) h+='<td class="pend">Pending</td>';
+      else h+="<td></td>";
+    }
+    h+="</tr>";
+  });
+  h+='<tr class="sum"><td>Available</td>';
+  for(let i=0;i<5;i++){
+    const away=staff.filter(s=>(leave[s]||[]).includes(i)).length;
+    const av=staff.length-away;
+    h+='<td class="'+(av<min?"gap":"")+'">'+av+" of 12</td>";
+  }
+  h+="</tr></tbody>";
+  document.getElementById("cal").innerHTML=h;
+})();
+
+const tabs=document.querySelectorAll("nav button");
+tabs.forEach(b=>b.addEventListener("click",()=>{
+  tabs.forEach(t=>t.setAttribute("aria-selected",t===b));
+  document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("on",p.id===b.dataset.p));
+}));
+const toast=document.getElementById("toast");
+function say(m){toast.textContent=m;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),2200)}
+document.getElementById("submit").addEventListener("click",()=>say("Request submitted. Your supervisor can now review it."));
+const bal={"Staff A":4,"Staff B":9,"Staff C":12,"Staff D":2,"Staff E":7,"Staff F":10,"Staff G":8,"Staff H":5};
+const who=document.getElementById("who"),left=document.getElementById("left");
+function showBal(){left.value=bal[who.value]+" days"}
+who.addEventListener("change",showBal);showBal();
+document.querySelectorAll("[data-act]").forEach(b=>b.addEventListener("click",()=>{
+  const card=b.closest(".req");
+  const tag=card.querySelector(".tag");
+  tag.textContent=b.dataset.act;tag.className="tag "+b.dataset.act.toLowerCase();
+  card.querySelector(".acts").remove();
+  say(b.dataset.act+". Staff will see the new status.");
+}));
+</script>
+</body>
+</html>
