@@ -3,215 +3,359 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Team Leave Plan: clickable layout</title>
+<title>Team Leave Plan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
-  --bg:#ffffff; --surface:#ffffff; --ink:#1b2a2f; --muted:#5b6b70; --line:#e6e9e8;
-  --brand:#1f5f5b; --brand-ink:#ffffff; --soft:#e3efec;
-  --warn:#b3261e; --warn-bg:#fbe9e7; --ok:#2e7d4f; --ok-bg:#e4f3ea; --wait:#8a5a00; --wait-bg:#fdf1d6;
-  --away:#dcefeb; --tint:#f5f7f6;
+  --page:#f0f0f0; --card:#ffffff; --tile:#f6f6f7; --field:#ffffff;
+  --ink:#111111; --ink-on:#ffffff; --muted:#5f5e64; --inactive:#85848a; --line:#e3e3e6;
+  --pink:#ffb3d5; --pink-ink:#111111;
+  --warn:#b3261e; --warn-bg:#fde8e6; --ok:#1f7a45; --ok-bg:#e2f4ea; --wait:#8a5a00; --wait-bg:#fdf0d0;
+  --away:#e4e4e8;
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg:#0f1719; --surface:#172225; --ink:#e6eeee; --muted:#9fb1b4; --line:#2a393c;
-    --brand:#5fb3ab; --brand-ink:#08201e; --soft:#1e3330;
+    --page:#0e0e0f; --card:#1b1b1d; --tile:#232326; --field:#2b2b2f;
+    --ink:#f2f2f3; --ink-on:#111111; --muted:#b0afb6; --inactive:#8f8e95; --line:#34343a;
     --warn:#ff8a80; --warn-bg:#3a1a18; --ok:#7fd1a0; --ok-bg:#183326; --wait:#f0c36a; --wait-bg:#38290a;
-    --away:#24433f; --tint:#1e2c2f; color-scheme:dark;
+    --away:#3a3a40; color-scheme:dark;
   }
 }
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
-.wrap{max-width:980px;margin:0 auto;padding:20px 16px 48px}
-header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:16px}
-h1{font-size:1.6rem;margin:0;letter-spacing:-.01em}
-.sub{color:var(--muted);font-size:.9rem}
-nav{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:20px;overflow-x:auto}
-nav button{font:inherit;font-weight:600;background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);padding:10px 14px;cursor:pointer;white-space:nowrap}
-nav button[aria-selected="true"]{color:var(--brand);border-bottom-color:var(--brand)}
-button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
-.panel{display:none}.panel.on{display:block}
-h2{font-size:1.2rem;margin:0 0 4px}
-.lead{color:var(--muted);margin:0 0 18px;max-width:60ch}
-.grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px}
-@media(max-width:760px){.grid{grid-template-columns:1fr}}
-.box{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px}
-label{display:block;font-weight:600;font-size:.9rem;margin:14px 0 4px}
-label:first-child{margin-top:0}
-input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 10px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.btn{font:inherit;font-weight:600;border-radius:6px;padding:10px 16px;border:1px solid var(--brand);background:var(--brand);color:var(--brand-ink);cursor:pointer;margin-top:18px}
-.btn.alt{background:transparent;color:var(--brand);margin-top:0}
-.btn.bad{background:transparent;color:var(--warn);border-color:var(--warn);margin-top:0}
-.tag{display:inline-block;font-size:.8rem;font-weight:600;padding:2px 9px;border-radius:99px}
+body{margin:0;background:var(--page);color:var(--ink);font:400 15px/1.45 "Inter Tight",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.page{max-width:1080px;margin:0 auto;padding:12px 14px 88px}
+.card{background:var(--card);border-radius:28px;padding:clamp(16px,2.5vw,30px)}
+.hero{text-align:center;margin:0 0 16px}
+h1{font-weight:800;letter-spacing:-.035em;line-height:1.05;font-size:clamp(1.8rem,4.2vw,2.5rem);margin:0}
+h2{font-weight:800;letter-spacing:-.02em;font-size:1.2rem;margin:0 0 2px}
+h3{font-weight:700;letter-spacing:-.01em;font-size:1rem;margin:0 0 6px}
+
+/* tabs at the top */
+.menu{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 16px}
+.menu button{font:inherit;text-align:left;background:var(--tile);border:2px solid transparent;padding:11px 16px;cursor:pointer;width:100%;color:var(--inactive);border-radius:18px;display:flex;flex-direction:column;justify-content:flex-start}
+.mt{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.03em;line-height:1.15;font-size:clamp(1rem,1.9vw,1.35rem)}
+.md{display:none;font-size:.82rem;font-weight:400;letter-spacing:0;color:var(--muted);margin-top:3px}
+.menu button[aria-selected="true"]{color:var(--ink);background:var(--card);border-color:var(--ink)}
+.menu button[aria-selected="true"] .md{display:block}
+.menu button:hover .mt{color:var(--ink)}
+@media(max-width:700px){.menu{display:flex;overflow-x:auto;padding:2px 2px 8px}.menu button{flex:0 0 auto;width:auto;min-width:176px}}
+.badge{font-size:.78rem;font-weight:700;letter-spacing:0;background:var(--pink);color:var(--pink-ink);border-radius:99px;min-width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;padding:0 6px}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.panel[hidden]{display:none}
+
+/* two column working area */
+.cols{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:14px;align-items:start}
+@media(max-width:860px){.cols{grid-template-columns:1fr}}
+.cols.one{grid-template-columns:1fr}
+.tile{background:var(--tile);border-radius:22px;padding:16px 18px}
+.tile.alt{background:var(--card);border:1px solid var(--line);border-radius:20px}
+
+/* form */
+label{display:block;font-weight:600;font-size:.82rem;margin:0 0 3px}
+input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+input[readonly]{background:transparent;border-style:dashed;color:var(--muted);font-weight:700;cursor:not-allowed}
+.f2{display:grid;grid-template-columns:1fr 1.5fr;gap:10px;margin-top:10px}
+.f3{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:10px;margin-top:10px}
+.f1{margin-top:10px}
+@media(max-width:560px){.f2{grid-template-columns:1fr}.f3{grid-template-columns:1fr 1fr}.f3>div:first-child{grid-column:1/-1}}
+.actions{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin-top:12px}
+.note{flex:1;min-width:0}
+.calc{margin:0;font-size:.84rem;color:var(--muted)}
+.msg{min-height:1.3em;margin:2px 0 0;font-size:.86rem;font-weight:600}
+.msg.err{color:var(--warn)} .msg.ok{color:var(--ok)}
+.btn{font:inherit;font-weight:700;border-radius:99px;padding:10px 22px;border:1px solid var(--ink);background:var(--ink);color:var(--ink-on);cursor:pointer;white-space:nowrap}
+.btn.sm{padding:8px 16px;font-size:.9rem}
+.btn.bad{background:transparent;color:var(--warn);border-color:var(--warn)}
+.btn.ghost{background:transparent;color:var(--ink);padding:6px 14px;font-size:.86rem}
+.small{font-size:.84rem;color:var(--muted)}
+.tag{display:inline-block;font-size:.76rem;font-weight:700;padding:2px 10px;border-radius:99px;white-space:nowrap}
 .tag.pending{background:var(--wait-bg);color:var(--wait)}
 .tag.approved{background:var(--ok-bg);color:var(--ok)}
 .tag.rejected{background:var(--warn-bg);color:var(--warn)}
 ul.plain{list-style:none;margin:0;padding:0}
-ul.plain li{padding:12px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}
+ul.plain li{padding:8px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:flex-start;font-size:.9rem}
 ul.plain li:last-child{border-bottom:0}
-.small{font-size:.85rem;color:var(--muted)}
-.req{padding:14px 0;border-bottom:1px solid var(--line)}
-.req:last-child{border-bottom:0}
-.req .top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.req .acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-.req input{margin-top:10px}
-input[readonly]{background:var(--tint);color:var(--muted);cursor:not-allowed;font-weight:600}
-.warnbar{background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-weight:600}
-.scroll{overflow-x:auto}
-table{border-collapse:collapse;width:100%;min-width:560px;background:var(--surface);border:1px solid var(--line)}
-th,td{border:1px solid var(--line);padding:8px 10px;text-align:center;font-size:.9rem}
+.empty{color:var(--muted);margin:6px 0 0}
+
+/* approvals */
+#queue{max-height:calc(100vh - 300px);min-height:110px;overflow-y:auto;padding:2px}
+.req{background:var(--card);border-radius:16px;padding:12px 14px;margin-top:10px}
+.req:first-child{margin-top:8px}
+.req .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
+.chip{font-size:.8rem;font-weight:600;background:var(--tile);border-radius:99px;padding:2px 10px}
+.chip.low{background:var(--warn-bg);color:var(--warn)}
+.bar{display:flex;gap:10px;align-items:center;margin-top:10px}
+.bar input{flex:1;min-width:0}
+.acts{display:flex;gap:8px;margin-left:auto}
+
+/* calendar */
+.calhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.calhead .navbtns{display:flex;gap:6px}
+.warnbar{background:var(--warn-bg);color:var(--warn);border-radius:12px;padding:7px 12px;margin:0 0 8px;font-weight:600;font-size:.88rem}
+.okbar{background:var(--ok-bg);color:var(--ok);border-radius:12px;padding:7px 12px;margin:0 0 8px;font-weight:600;font-size:.88rem}
+.scroll{overflow-x:auto;border-radius:12px;border:1px solid var(--line);background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:480px}
+th,td{border-bottom:1px solid var(--line);padding:4px 8px;text-align:center;font-size:.84rem}
+th{background:var(--tile);font-weight:700}
 th:first-child,td:first-child{text-align:left;font-weight:600;white-space:nowrap}
-td.away{background:var(--away);color:var(--brand);font-weight:600}
-td.pend{background:repeating-linear-gradient(45deg,var(--wait-bg),var(--wait-bg) 6px,transparent 6px,transparent 12px);color:var(--wait);font-weight:600}
-tr.sum td{font-weight:700;background:var(--tint)}
-td.gap{background:var(--warn-bg);color:var(--warn)}
-.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px}
+td.away{background:var(--away);font-weight:700}
+td.pend{background:repeating-linear-gradient(45deg,var(--wait-bg),var(--wait-bg) 6px,transparent 6px,transparent 12px);color:var(--wait);font-weight:700}
+tr.sum td{font-weight:800;background:var(--tile);border-bottom:0}
+td.gap{background:var(--warn-bg)!important;color:var(--warn)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
 .legend span{display:flex;align-items:center;gap:6px}
-.sw{width:14px;height:14px;border:1px solid var(--line);border-radius:3px;display:inline-block}
-.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw}
+.sw{width:13px;height:13px;border:1px solid var(--line);border-radius:4px;display:inline-block}
+
+.fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));width:56px;height:56px;border-radius:50%;border:0;background:var(--pink);color:var(--pink-ink);font:700 30px/1 "Inter Tight",sans-serif;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;padding:0 0 3px}
+.fab[hidden]{display:none}
+.toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--ink-on);padding:10px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw;font-weight:600;font-size:.9rem;text-align:center}
 .toast.show{opacity:1}
 @media (prefers-reduced-motion:reduce){.toast{transition:none}}
-.note{margin-top:28px;font-size:.85rem;color:var(--muted)}
+.foot{margin:12px 0 0;text-align:center;font-size:.76rem;color:var(--inactive)}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <h1>Team Leave Plan</h1>
-    <span class="sub">Northwind Support (fictional data). Step 1: clickable layout.</span>
-  </header>
+<main class="page">
+  <section class="card">
+    <header class="hero"><h1>Team Leave Plan</h1></header>
 
-  <nav role="tablist" aria-label="Screens">
-    <button role="tab" aria-selected="true" data-p="request">1. Request leave</button>
-    <button role="tab" aria-selected="false" data-p="approve">2. Approve requests</button>
-    <button role="tab" aria-selected="false" data-p="calendar">3. Team calendar</button>
-  </nav>
+    <nav class="menu" role="tablist" aria-orientation="horizontal" aria-label="Screens">
+      <button role="tab" id="t-request" aria-selected="true" aria-controls="p-request" data-p="request">
+        <span class="mt">Request leave</span>
+      </button>
+      <button role="tab" id="t-approve" aria-selected="false" aria-controls="p-approve" data-p="approve">
+        <span class="mt">Approve requests <span class="badge" id="pend" aria-label="pending requests">0</span></span>
+      </button>
+      <button role="tab" id="t-calendar" aria-selected="false" aria-controls="p-calendar" data-p="calendar">
+        <span class="mt">Team calendar</span>
+      </button>
+    </nav>
 
-  <!-- Screen 1 -->
-  <section class="panel on" id="request" role="tabpanel">
-    <h2>Request leave</h2>
-    <p class="lead">Fill in the form and your supervisor is notified in the app. No separate message needed.</p>
-    <div class="grid">
-      <div class="box">
-        <label for="who">Your name</label>
-        <select id="who"><option>Staff A</option><option>Staff B</option><option>Staff C</option><option>Staff D</option><option>Staff E</option><option>Staff F</option><option selected>Staff G</option><option>Staff H</option></select>
-        <label for="left">Eligible leave remaining until end of work year (31 Dec 2026)</label>
-        <input id="left" type="text" readonly aria-readonly="true" value="8 days">
-        <label for="type">Leave type</label>
-        <select id="type"><option>Annual leave</option><option>Sick leave</option><option>Other</option></select>
-        <div class="row">
-          <div><label for="from">Start date</label><input id="from" type="date" value="2026-11-05"></div>
-          <div><label for="to">End date</label><input id="to" type="date" value="2026-11-06"></div>
+    <!-- Request leave -->
+    <div class="panel" id="p-request" role="tabpanel" aria-labelledby="t-request">
+      <div class="cols">
+        <div class="tile">
+          <h2>Request leave</h2>
+          <div class="f2">
+            <div><label for="who">Your name</label><select id="who"></select></div>
+            <div><label for="left">Eligible leave remaining until end of work year (31 Dec 2026)</label><input id="left" type="text" readonly aria-readonly="true"></div>
+          </div>
+          <div class="f3">
+            <div><label for="type">Leave type</label><select id="type"><option>Annual leave</option><option>Sick leave</option><option>Other leave</option></select></div>
+            <div><label for="from">Start date</label><input id="from" type="date" value="2026-11-09"></div>
+            <div><label for="to">End date</label><input id="to" type="date" value="2026-11-10"></div>
+          </div>
+          <div class="f1"><label for="why">Reason (optional)</label><input id="why" type="text" placeholder="For example: family event"></div>
+          <div class="actions">
+            <div class="note">
+              <p class="calc" id="calc"></p>
+              <p class="msg" id="formMsg" role="status" aria-live="polite"></p>
+            </div>
+            <button class="btn" id="submit" type="button">Submit request</button>
+          </div>
         </div>
-        <label for="why">Reason (optional)</label>
-        <textarea id="why" rows="3" placeholder="For example: family event"></textarea>
-        <button class="btn" id="submit">Submit request</button>
-      </div>
-      <div class="box">
-        <h2>My requests</h2>
-        <ul class="plain" id="mine">
-          <li><div>Mon 26 Oct to Tue 27 Oct<br><span class="small">Annual leave</span></div><span class="tag approved">Approved</span></li>
-          <li><div>Fri 9 Oct<br><span class="small">Sick leave</span></div><span class="tag approved">Approved</span></li>
-          <li><div>Mon 14 Sep<br><span class="small">Other</span></div><span class="tag rejected">Rejected</span></li>
-        </ul>
+        <div class="tile alt">
+          <h3>My requests</h3>
+          <ul class="plain" id="mine"></ul>
+        </div>
       </div>
     </div>
-  </section>
 
-  <!-- Screen 2 -->
-  <section class="panel" id="approve" role="tabpanel">
-    <h2>Requests waiting for you</h2>
-    <p class="lead">Each card shows how many people would be available on the days requested.</p>
-    <div class="box" id="queue">
-      <div class="req">
-        <div class="top"><strong>Staff H</strong><span class="tag pending">Pending</span></div>
-        <div>Other leave, Wed 4 Nov</div>
-        <div class="small">Team available that day if approved: 6 of 12 (below the minimum of 8)</div>
-        <input type="text" placeholder="Comment (optional)" aria-label="Comment for Staff H">
-        <div class="acts"><button class="btn alt" data-act="Approved">Approve</button><button class="btn bad" data-act="Rejected">Reject</button></div>
-      </div>
-      <div class="req">
-        <div class="top"><strong>Staff G</strong><span class="tag pending">Pending</span></div>
-        <div>Annual leave, Thu 5 Nov to Fri 6 Nov</div>
-        <div class="small">Team available if approved: 9 of 12 on Thu, 9 of 12 on Fri</div>
-        <input type="text" placeholder="Comment (optional)" aria-label="Comment for Staff G">
-        <div class="acts"><button class="btn alt" data-act="Approved">Approve</button><button class="btn bad" data-act="Rejected">Reject</button></div>
+    <!-- Approve requests -->
+    <div class="panel" id="p-approve" role="tabpanel" aria-labelledby="t-approve" hidden>
+      <div class="cols">
+        <div class="tile">
+          <h2>Requests waiting for you</h2>
+          <div id="queue"></div>
+        </div>
+        <div class="tile alt">
+          <h3>Recently decided</h3>
+          <ul class="plain" id="decided"></ul>
+        </div>
       </div>
     </div>
-  </section>
 
-  <!-- Screen 3 -->
-  <section class="panel" id="calendar" role="tabpanel">
-    <h2>Team calendar: 2 to 6 Nov 2026</h2>
-    <p class="lead">Approved leave appears here automatically. Days below the minimum of 8 people turn red.</p>
-    <div class="warnbar" role="alert">Manpower gap on Wed 4 Nov: only 7 of 12 available. Plan backup cover.</div>
-    <div class="scroll">
-      <table id="cal"></table>
+    <!-- Team calendar -->
+    <div class="panel" id="p-calendar" role="tabpanel" aria-labelledby="t-calendar" hidden>
+      <div class="cols one">
+        <div class="tile">
+          <div class="calhead">
+            <h2 id="weekTitle"></h2>
+            <div class="navbtns">
+              <button class="btn ghost" id="prev" type="button" aria-label="Previous week">Previous</button>
+              <button class="btn ghost" id="next" type="button" aria-label="Next week">Next</button>
+            </div>
+          </div>
+          <div id="gaps"></div>
+          <div class="scroll"><table id="cal"></table></div>
+          <div class="legend small">
+            <span><i class="sw" style="background:var(--away)"></i>Approved leave</span>
+            <span><i class="sw" style="background:var(--wait-bg)"></i>Pending request</span>
+            <span><i class="sw" style="background:var(--warn-bg)"></i>Below minimum of 8</span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="legend small">
-      <span><i class="sw" style="background:var(--away)"></i>Approved leave</span>
-      <span><i class="sw" style="background:var(--wait-bg)"></i>Pending request</span>
-      <span><i class="sw" style="background:var(--warn-bg)"></i>Below minimum team size</span>
-    </div>
-  </section>
 
-  <p class="note">This is the layout step. Buttons respond, but the calendar does not yet recalculate. That comes in step 2.</p>
-</div>
+    <p class="foot">Demo only. Data is fictional and kept in memory, so a page reload resets it. Sick leave does not use up eligible days.</p>
+  </section>
+</main>
+
+<button class="fab" id="fab" type="button" aria-label="New leave request" hidden>+</button>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
-const days=["Mon 2","Tue 3","Wed 4","Thu 5","Fri 6"];
-const staff=["Staff A","Staff B","Staff C","Staff D","Staff E","Staff F","Staff G","Staff H","Staff I","Staff J","Staff K","Staff L"];
-const leave={ "Staff A":[2,3],"Staff B":[2],"Staff C":[2],"Staff D":[2,3,4],"Staff E":[2],"Staff F":[4] };
-const pend={ "Staff G":[3,4],"Staff H":[2] };
-const min=8;
-(function build(){
-  let h="<thead><tr><th>Person</th>"+days.map(d=>"<th>"+d+"</th>").join("")+"</tr></thead><tbody>";
-  staff.forEach(s=>{
-    h+="<tr><td>"+s+"</td>";
-    for(let i=0;i<5;i++){
-      if((leave[s]||[]).includes(i)) h+='<td class="away">Away</td>';
-      else if((pend[s]||[]).includes(i)) h+='<td class="pend">Pending</td>';
-      else h+="<td></td>";
-    }
-    h+="</tr>";
-  });
-  h+='<tr class="sum"><td>Available</td>';
-  for(let i=0;i<5;i++){
-    const away=staff.filter(s=>(leave[s]||[]).includes(i)).length;
-    const av=staff.length-away;
-    h+='<td class="'+(av<min?"gap":"")+'">'+av+" of 12</td>";
-  }
-  h+="</tr></tbody>";
-  document.getElementById("cal").innerHTML=h;
-})();
+const STAFF="ABCDEFGHIJKL".split("").map(c=>"Staff "+c);
+const MIN=8;
+const WD=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const MO=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const bal={"Staff A":4,"Staff B":9,"Staff C":12,"Staff D":2,"Staff E":7,"Staff F":10,"Staff G":8,"Staff H":5,"Staff I":10,"Staff J":10,"Staff K":10,"Staff L":10};
+let reqs=[
+  {id:1,who:"Staff A",type:"Annual leave",from:"2026-11-04",to:"2026-11-05",status:"approved"},
+  {id:2,who:"Staff B",type:"Annual leave",from:"2026-11-04",to:"2026-11-04",status:"approved"},
+  {id:3,who:"Staff C",type:"Annual leave",from:"2026-11-04",to:"2026-11-04",status:"approved"},
+  {id:4,who:"Staff D",type:"Annual leave",from:"2026-11-04",to:"2026-11-06",status:"approved"},
+  {id:5,who:"Staff E",type:"Other leave",from:"2026-11-04",to:"2026-11-04",status:"approved"},
+  {id:6,who:"Staff F",type:"Annual leave",from:"2026-11-06",to:"2026-11-06",status:"approved"},
+  {id:7,who:"Staff G",type:"Sick leave",from:"2026-10-09",to:"2026-10-09",status:"approved"},
+  {id:8,who:"Staff G",type:"Annual leave",from:"2026-10-26",to:"2026-10-27",status:"approved"},
+  {id:9,who:"Staff G",type:"Other leave",from:"2026-09-14",to:"2026-09-14",status:"rejected",comment:"Month end close, please pick another day."},
+  {id:10,who:"Staff H",type:"Other leave",from:"2026-11-04",to:"2026-11-04",status:"pending",reason:"Personal errand"},
+  {id:11,who:"Staff G",type:"Annual leave",from:"2026-11-05",to:"2026-11-06",status:"pending",reason:"Family event"}
+];
+let nextId=20, weekStart="2026-11-02";
 
-const tabs=document.querySelectorAll("nav button");
-tabs.forEach(b=>b.addEventListener("click",()=>{
-  tabs.forEach(t=>t.setAttribute("aria-selected",t===b));
-  document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("on",p.id===b.dataset.p));
-}));
-const toast=document.getElementById("toast");
-function say(m){toast.textContent=m;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),2200)}
-document.getElementById("submit").addEventListener("click",()=>say("Request submitted. Your supervisor can now review it."));
-const bal={"Staff A":4,"Staff B":9,"Staff C":12,"Staff D":2,"Staff E":7,"Staff F":10,"Staff G":8,"Staff H":5};
-const who=document.getElementById("who"),left=document.getElementById("left");
-function showBal(){left.value=bal[who.value]+" days"}
-who.addEventListener("change",showBal);showBal();
-document.querySelectorAll("[data-act]").forEach(b=>b.addEventListener("click",()=>{
-  const card=b.closest(".req");
-  const tag=card.querySelector(".tag");
-  tag.textContent=b.dataset.act;tag.className="tag "+b.dataset.act.toLowerCase();
-  card.querySelector(".acts").remove();
-  say(b.dataset.act+". Staff will see the new status.");
-}));
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const parse=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
+const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const fmt=s=>{const d=parse(s);return WD[d.getDay()]+" "+d.getDate()+" "+MO[d.getMonth()]};
+const fmtShort=s=>{const d=parse(s);return WD[d.getDay()]+" "+d.getDate()};
+const addDays=(s,n)=>{const d=parse(s);d.setDate(d.getDate()+n);return iso(d)};
+const range=(a,b)=>a===b?fmt(a):fmt(a)+" to "+fmt(b);
+function workdays(a,b){const out=[];let c=a,g=0;while(c<=b&&g++<400){const w=parse(c).getDay();if(w>0&&w<6)out.push(c);c=addDays(c,1)}return out}
+const deducts=t=>t!=="Sick leave";
+const cost=r=>deducts(r.type)?workdays(r.from,r.to).length:0;
+const awayOn=(who,d)=>reqs.some(r=>r.who===who&&r.status==="approved"&&r.from<=d&&d<=r.to);
+const availOn=d=>STAFF.filter(s=>!awayOn(s,d)).length;
+const plural=(n,w)=>n+" "+w+(n===1?"":"s");
+const tag=s=>'<span class="tag '+s+'">'+s[0].toUpperCase()+s.slice(1)+'</span>';
+
+let tt;
+function say(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),2400)}
+
+/* navigation */
+function showPanel(p){
+  document.querySelectorAll(".menu button").forEach(b=>b.setAttribute("aria-selected",b.dataset.p===p));
+  document.querySelectorAll(".panel").forEach(x=>x.hidden=x.id!=="p-"+p);
+  $("fab").hidden=(p==="request");
+}
+document.querySelectorAll(".menu button").forEach(b=>b.addEventListener("click",()=>showPanel(b.dataset.p)));
+$("fab").addEventListener("click",()=>{showPanel("request");$("who").focus()});
+
+/* request form */
+$("who").innerHTML=STAFF.map(s=>'<option'+(s==="Staff G"?" selected":"")+'>'+s+'</option>').join("");
+function updateForm(){
+  const w=$("who").value;
+  $("left").value=plural(bal[w],"day");
+  const a=$("from").value,b=$("to").value;
+  if(!a||!b||b<a){$("calc").textContent="";return}
+  const n=workdays(a,b).length;
+  if(deducts($("type").value)){
+    $("calc").textContent=plural(n,"working day")+" requested. Balance if approved: "+plural(bal[w]-n,"day")+".";
+  }else{
+    $("calc").textContent=plural(n,"working day")+" requested. Sick leave does not use eligible days.";
+  }
+}
+["who","type","from","to"].forEach(id=>$(id).addEventListener("change",()=>{updateForm();renderMine()}));
+function formMsg(t,cls){const m=$("formMsg");m.textContent=t;m.className="msg "+(cls||"")}
+$("submit").addEventListener("click",()=>{
+  const who=$("who").value,type=$("type").value,a=$("from").value,b=$("to").value;
+  if(!a||!b){formMsg("Choose a start date and an end date.","err");return}
+  if(b<a){formMsg("The end date must be on or after the start date.","err");return}
+  const days=workdays(a,b).length;
+  if(days===0){formMsg("Those dates fall on a weekend. Choose at least one working day.","err");return}
+  if(reqs.some(r=>r.who===who&&r.status!=="rejected"&&r.from<=b&&a<=r.to)){formMsg("You already have a request covering some of those dates.","err");return}
+  if(deducts(type)&&days>bal[who]){formMsg("You have "+plural(bal[who],"day")+" left but this request needs "+days+".","err");return}
+  reqs.push({id:nextId++,who,type,from:a,to:b,status:"pending",reason:$("why").value.trim()});
+  $("why").value="";
+  formMsg("Request submitted. Your supervisor can now review it.","ok");
+  say("Request submitted");
+  renderAll();
+});
+
+/* renderers */
+function renderMine(){
+  const w=$("who").value;
+  const mine=reqs.filter(r=>r.who===w).sort((x,y)=>y.from.localeCompare(x.from)).slice(0,5);
+  $("mine").innerHTML=mine.length?mine.map(r=>
+    '<li><div>'+range(r.from,r.to)+'<br><span class="small">'+esc(r.type)+(r.comment?'. Supervisor: '+esc(r.comment):'')+'</span></div>'+tag(r.status)+'</li>'
+  ).join(""):'<li class="empty">No requests yet.</li>';
+}
+function renderQueue(){
+  const p=reqs.filter(r=>r.status==="pending");
+  $("pend").textContent=p.length;
+  $("pend").style.display=p.length?"inline-flex":"none";
+  if(!p.length){$("queue").innerHTML='<p class="empty">No requests waiting. New requests appear here.</p>';return}
+  $("queue").innerHTML=p.map(r=>{
+    const days=workdays(r.from,r.to);
+    const chips=days.map(d=>{const a=availOn(d)-(awayOn(r.who,d)?0:1);return '<span class="chip'+(a<MIN?" low":"")+'">'+fmtShort(d)+': '+a+' of 12'+(a<MIN?', below '+MIN:'')+'</span>'}).join("");
+    const after=deducts(r.type)?'Balance after: '+plural(bal[r.who]-days.length,"day"):'Sick leave, no balance used';
+    return '<div class="req"><div class="top"><div><strong>'+esc(r.who)+'</strong> <span class="small">'+esc(r.type)+', '+range(r.from,r.to)+' ('+plural(days.length,"working day")+')'+(r.reason?'. '+esc(r.reason):'')+'</span></div>'+tag("pending")+'</div>'+
+      '<div class="chips"><span class="small">Available if approved:</span>'+chips+'<span class="small">'+after+'</span></div>'+
+      '<div class="bar"><input type="text" id="c-'+r.id+'" placeholder="Comment (optional)" aria-label="Comment for '+esc(r.who)+'">'+
+      '<div class="acts"><button class="btn sm bad" data-act="reject" data-id="'+r.id+'" type="button">Reject</button>'+
+      '<button class="btn sm" data-act="approve" data-id="'+r.id+'" type="button">Approve</button></div></div></div>';
+  }).join("");
+}
+function renderDecided(){
+  const d=reqs.filter(r=>r.status!=="pending").sort((x,y)=>(y.decidedAt||0)-(x.decidedAt||0)||y.id-x.id).slice(0,4);
+  $("decided").innerHTML=d.map(r=>'<li><div>'+esc(r.who)+', '+esc(r.type)+'<br><span class="small">'+range(r.from,r.to)+(r.comment?'. '+esc(r.comment):'')+'</span></div>'+tag(r.status)+'</li>').join("");
+}
+function renderCal(){
+  const days=[0,1,2,3,4].map(i=>addDays(weekStart,i));
+  $("weekTitle").textContent=fmt(days[0])+" to "+fmt(days[4])+" "+parse(days[4]).getFullYear();
+  let h="<thead><tr><th>Person</th>"+days.map(d=>"<th>"+fmtShort(d)+"</th>").join("")+"</tr></thead><tbody>";
+  STAFF.forEach(s=>{
+    h+="<tr><td>"+s+"</td>"+days.map(d=>{
+      if(awayOn(s,d))return '<td class="away">Away</td>';
+      if(reqs.some(r=>r.who===s&&r.status==="pending"&&r.from<=d&&d<=r.to))return '<td class="pend">Pending</td>';
+      return "<td></td>";
+    }).join("")+"</tr>";
+  });
+  h+='<tr class="sum"><td>Available</td>'+days.map(d=>{const a=availOn(d);return '<td class="'+(a<MIN?"gap":"")+'">'+a+' of 12</td>'}).join("")+"</tr></tbody>";
+  $("cal").innerHTML=h;
+  const low=days.filter(d=>availOn(d)<MIN);
+  $("gaps").innerHTML=low.length?low.map(d=>'<div class="warnbar" role="status">Manpower gap on '+fmt(d)+': only '+availOn(d)+' of 12 available. Plan backup cover.</div>').join(""):'<div class="okbar" role="status">No manpower gaps this week.</div>';
+}
+function renderAll(){renderMine();renderQueue();renderDecided();renderCal();updateForm()}
+
+/* approve and reject */
+$("queue").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-act]");if(!b)return;
+  const r=reqs.find(x=>x.id===+b.dataset.id);if(!r)return;
+  const c=$("c-"+r.id).value.trim();
+  if(b.dataset.act==="approve"){
+    const n=cost(r);
+    if(n>bal[r.who]){say(r.who+" only has "+plural(bal[r.who],"day")+" left.");return}
+    bal[r.who]-=n;r.status="approved";
+  }else r.status="rejected";
+  r.comment=c;r.decidedAt=Date.now();
+  say((r.status==="approved"?"Approved":"Rejected")+". Calendar and balance updated.");
+  renderAll();
+});
+$("prev").addEventListener("click",()=>{weekStart=addDays(weekStart,-7);renderCal()});
+$("next").addEventListener("click",()=>{weekStart=addDays(weekStart,7);renderCal()});
+
+renderAll();
 </script>
 </body>
 </html>
